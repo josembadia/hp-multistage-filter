@@ -1,0 +1,15 @@
+Sequential f: 9 c: 19, n: 1000000 b: 1 time: 0.850953 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2 time: 0.858297 s.
+Sequential f: 9 c: 19, n: 1000000 b: 4 time: 0.859816 s.
+Sequential f: 9 c: 19, n: 1000000 b: 8 time: 0.864869 s.
+Sequential f: 9 c: 19, n: 1000000 b: 16 time: 0.873922 s.
+Sequential f: 9 c: 19, n: 1000000 b: 32 time: 0.877082 s.
+Sequential f: 9 c: 19, n: 1000000 b: 64 time: 0.878739 s.
+Sequential f: 9 c: 19, n: 1000000 b: 128 time: 0.878955 s.
+Sequential f: 9 c: 19, n: 1000000 b: 256 time: 0.879710 s.
+Sequential f: 9 c: 19, n: 1000000 b: 512 time: 0.879734 s.
+Sequential f: 9 c: 19, n: 1000000 b: 1024 time: 0.879549 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 0.880696 s.
+Sequential f: 9 c: 19, n: 1000000 b: 4096 time: 0.880268 s.
+Sequential f: 9 c: 19, n: 1000000 b: 8192 time: 0.880150 s.
+Sequential f: 9 c: 19, n: 1000000 b: 16384 time: 0.880399 s.

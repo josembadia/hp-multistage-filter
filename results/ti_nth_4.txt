@@ -1,0 +1,60 @@
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 2.832837 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 1.694714 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 1.215211 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.953321 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.777017 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.662147 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.573666 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.508476 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.454227 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.407904 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.377006 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.351190 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.323983 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.302760 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.285608 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.268305 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.255023 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.240701 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.230738 s.
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.228685 s.
+cpuf: 115.20 MHz
+
+cpuf: 192.00 MHz
+
+cpuf: 268.80 MHz
+
+cpuf: 345.60 MHz
+
+cpuf: 422.40 MHz
+
+cpuf: 499.20 MHz
+
+cpuf: 576.00 MHz
+
+cpuf: 652.80 MHz
+
+cpuf: 729.60 MHz
+
+cpuf: 806.40 MHz
+
+cpuf: 883.20 MHz
+
+cpuf: 960.00 MHz
+
+cpuf: 1036.80 MHz
+
+cpuf: 1113.60 MHz
+
+cpuf: 1190.40 MHz
+
+cpuf: 1267.20 MHz
+
+cpuf: 1344.00 MHz
+
+cpuf: 1420.80 MHz
+
+cpuf: 1497.60 MHz
+
+cpuf: 1510.40 MHz
+

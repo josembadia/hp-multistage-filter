@@ -1,0 +1,60 @@
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 11.630401 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 6.972938 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 4.954395 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 3.850302 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 3.148935 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 2.668972 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 2.308384 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 2.035415 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.824537 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.647467 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.504449 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.383544 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.280974 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.192723 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.115908 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 1.048126 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 0.988569 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 0.934940 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 0.887058 s.
+Sequential f: 9 c: 19, n: 1000000 b: 2048 time: 0.879502 s.
+cpuf: 115.20 MHz
+
+cpuf: 192.00 MHz
+
+cpuf: 268.80 MHz
+
+cpuf: 345.60 MHz
+
+cpuf: 422.40 MHz
+
+cpuf: 499.20 MHz
+
+cpuf: 576.00 MHz
+
+cpuf: 652.80 MHz
+
+cpuf: 729.60 MHz
+
+cpuf: 806.40 MHz
+
+cpuf: 883.20 MHz
+
+cpuf: 960.00 MHz
+
+cpuf: 1036.80 MHz
+
+cpuf: 1113.60 MHz
+
+cpuf: 1190.40 MHz
+
+cpuf: 1267.20 MHz
+
+cpuf: 1344.00 MHz
+
+cpuf: 1420.80 MHz
+
+cpuf: 1497.60 MHz
+
+cpuf: 1510.40 MHz
+

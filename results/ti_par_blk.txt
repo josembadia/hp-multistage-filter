@@ -1,0 +1,66 @@
+nth:  1
+   blk:  512
+Parallel eq. t: 1 f: 9 c: 19, n: 1000000 b: 512 time: 2.288799 s.
+   blk:  1024
+Parallel eq. t: 1 f: 9 c: 19, n: 1000000 b: 1024 time: 1.075170 s.
+   blk:  2048
+Parallel eq. t: 1 f: 9 c: 19, n: 1000000 b: 2048 time: 0.878689 s.
+   blk:  4096
+Parallel eq. t: 1 f: 9 c: 19, n: 1000000 b: 4096 time: 0.840192 s.
+   blk:  8192
+Parallel eq. t: 1 f: 9 c: 19, n: 1000000 b: 8192 time: 0.830977 s.
+nth:  2
+   blk:  512
+Parallel eq. t: 2 f: 9 c: 19, n: 1000000 b: 512 time: 0.719946 s.
+   blk:  1024
+Parallel eq. t: 2 f: 9 c: 19, n: 1000000 b: 1024 time: 0.507789 s.
+   blk:  2048
+Parallel eq. t: 2 f: 9 c: 19, n: 1000000 b: 2048 time: 0.451585 s.
+   blk:  4096
+Parallel eq. t: 2 f: 9 c: 19, n: 1000000 b: 4096 time: 0.435789 s.
+   blk:  8192
+Parallel eq. t: 2 f: 9 c: 19, n: 1000000 b: 8192 time: 0.426583 s.
+nth:  3
+   blk:  512
+Parallel eq. t: 3 f: 9 c: 19, n: 1000000 b: 512 time: 0.417053 s.
+   blk:  1024
+Parallel eq. t: 3 f: 9 c: 19, n: 1000000 b: 1024 time: 0.323124 s.
+   blk:  2048
+Parallel eq. t: 3 f: 9 c: 19, n: 1000000 b: 2048 time: 0.298189 s.
+   blk:  4096
+Parallel eq. t: 3 f: 9 c: 19, n: 1000000 b: 4096 time: 0.289890 s.
+   blk:  8192
+Parallel eq. t: 3 f: 9 c: 19, n: 1000000 b: 8192 time: 0.289112 s.
+nth:  4
+   blk:  512
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 512 time: 0.317140 s.
+   blk:  1024
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 1024 time: 0.255162 s.
+   blk:  2048
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 2048 time: 0.228595 s.
+   blk:  4096
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 4096 time: 0.221186 s.
+   blk:  8192
+Parallel eq. t: 4 f: 9 c: 19, n: 1000000 b: 8192 time: 0.220791 s.
+nth:  5
+   blk:  512
+Parallel eq. t: 5 f: 9 c: 19, n: 1000000 b: 512 time: 0.270366 s.
+   blk:  1024
+Parallel eq. t: 5 f: 9 c: 19, n: 1000000 b: 1024 time: 0.203013 s.
+   blk:  2048
+Parallel eq. t: 5 f: 9 c: 19, n: 1000000 b: 2048 time: 0.185382 s.
+   blk:  4096
+Parallel eq. t: 5 f: 9 c: 19, n: 1000000 b: 4096 time: 0.187722 s.
+   blk:  8192
+Parallel eq. t: 5 f: 9 c: 19, n: 1000000 b: 8192 time: 0.189186 s.
+nth:  6
+   blk:  512
+Parallel eq. t: 6 f: 9 c: 19, n: 1000000 b: 512 time: 0.235103 s.
+   blk:  1024
+Parallel eq. t: 6 f: 9 c: 19, n: 1000000 b: 1024 time: 0.176018 s.
+   blk:  2048
+Parallel eq. t: 6 f: 9 c: 19, n: 1000000 b: 2048 time: 0.162646 s.
+   blk:  4096
+Parallel eq. t: 6 f: 9 c: 19, n: 1000000 b: 4096 time: 0.167248 s.
+   blk:  8192
+Parallel eq. t: 6 f: 9 c: 19, n: 1000000 b: 8192 time: 0.170458 s.
