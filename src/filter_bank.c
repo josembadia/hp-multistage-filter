@@ -10,12 +10,21 @@
  * The outer loop iterates over input samples and the inner loop over stages.
  * Each input sample is propagated through the whole cascade before the next sample.
  * This is the classic "streaming" approach.
+ *
+ * @param[in]     x_input  Pointer to the input signal array.
+ * @param[in]     nsamples Number of samples to process.
+ * @param[in]     nfilters Number of filtering stages in the cascade.
+ * @param[in]     b        Pointer to the prototype FIR filter coefficients.
+ * @param[in]     ncoef    Number of coefficients in the prototype filter.
+ * @param[in]     g        Vector of gains for each frequency band.
+ * @param[in,out] y        Pointer to the output buffer where results are accumulated.
  */
 void linear_filter_seq_sample_first(float *x_input, int nsamples, int nfilters, float *b, int ncoef, float *g, float *y)
 {
     int D = (ncoef - 1) / 2;
 
     // Allocate and initialize per-stage streaming states (zs, zs_ptr)
+    // Used as circular buffers
     float **zs = (float **)malloc(nfilters * sizeof(float *));
     int   *zs_ptr = (int *)calloc(nfilters, sizeof(int));
 
@@ -72,6 +81,15 @@ void linear_filter_seq_sample_first(float *x_input, int nsamples, int nfilters, 
  * Processes the input in blocks of @p block_size. For each block, all stages
  * are applied in order. This significantly improves temporal locality for
  * the prototype coefficients @p b and helps the filter state fit in cache.
+ *
+ * @param[in]     x_input    Pointer to the input signal array.
+ * @param[in]     nsamples   Number of samples to process.
+ * @param[in]     nfilters   Number of filtering stages in the cascade.
+ * @param[in]     b          Pointer to the prototype FIR filter coefficients.
+ * @param[in]     ncoef      Number of coefficients in the prototype filter.
+ * @param[in]     g          Vector of gains for each frequency band.
+ * @param[in,out] y          Pointer to the output buffer where results are accumulated.
+ * @param[in]     block_size Size of the data block for cache optimization (must be power of 2).
  */
 void linear_filter_seq_blocked(float *x_input, int nsamples, int nfilters, float *b, int ncoef, float *g, float *y, int block_size) {
     int D = (ncoef - 1) / 2; 
@@ -89,6 +107,7 @@ void linear_filter_seq_blocked(float *x_input, int nsamples, int nfilters, float
     float *buffer_A = (float *)malloc(block_size * sizeof(float));
     float *buffer_B = (float *)malloc(block_size * sizeof(float));
 
+    // Loop over blocks of input samples
     for (int i_start = 0; i_start < nsamples; i_start += block_size) {
         int i_end = MIN(i_start + block_size, nsamples);
         int current_bsize = i_end - i_start;
@@ -130,6 +149,20 @@ void linear_filter_seq_blocked(float *x_input, int nsamples, int nfilters, float
 
 /**
  * @brief Task-parallel pipeline implementation using OpenMP.
+ *
+ * This version divides the workload into blocks and uses OpenMP tasks with 
+ * 'depend' clauses to create a software pipeline. Stages of the filter bank 
+ * for different blocks are executed in parallel while respecting data dependencies.
+ *
+ * @param[in]     x_input    Pointer to the input signal array.
+ * @param[in]     nsamples   Number of samples to process.
+ * @param[in]     nfilters   Number of filtering stages in the cascade.
+ * @param[in]     b          Pointer to the prototype FIR filter coefficients.
+ * @param[in]     ncoef      Number of coefficients in the prototype filter.
+ * @param[in]     g          Vector of gains for each frequency band.
+ * @param[in,out] y          Pointer to the output buffer where results are accumulated.
+ * @param[in]     nthreads   Number of OpenMP threads to use for execution.
+ * @param[in]     block_size Size of the data block for task granularity (must be power of 2).
  */
 void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, float *b, int ncoef, float *g, float *y, int nthreads, int block_size) {
     int D = (ncoef - 1) / 2;
@@ -161,8 +194,12 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, fl
         y_local[t] = (float *)calloc(nsamples, sizeof(float));
     }
 
-    #pragma omp parallel num_threads(nthreads)
+    #pragma omp parallel num_threads(nthreads) // parallel region
     {
+        /* * A single thread orchestrates task generation to prevent redundant work. 
+           * Once tasks are queued, this thread also joins the rest of the pool as a 
+           * consumer, executing tasks in parallel as their dependencies are met.
+        */   
         #pragma omp single
         {
             for (int b_idx = 0; b_idx < nblocks; b_idx++) {
@@ -171,7 +208,7 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, fl
                 int current_bsize = i_end - i_start;
                 int win_offset = i_start & mask;
 
-                // Task 1: Fetch/Copy input block
+                // Task load block: Fetch/Copy input block
                 #pragma omp task depend(out: x_win[0][win_offset]) firstprivate(i_start, current_bsize, win_offset)
                 {
                     memcpy(&x_win[0][win_offset], &x_input[i_start], current_bsize * sizeof(float));
@@ -206,6 +243,7 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, fl
                 }
 
                 // Task Final: Local accumulation/reduction to global y
+		// After applying every stage to each block
                 #pragma omp task firstprivate(i_start, i_end, nthreads) \
                                  depend(in: x_win[nfilters][win_offset]) \
                                  depend(inout: y[i_start])

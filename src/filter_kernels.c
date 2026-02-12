@@ -20,18 +20,18 @@ float FIR(float x_in, float *zs, int *zs_ptr, float *b, int ncoef, int s) {
     int L_f = (ncoef - 1) * s + 1; 
     float x_out = 0.0;
     
-    // 1) Write the new input sample into the circular state
+    // Write the new input sample into the circular state
     zs[*zs_ptr] = x_in; 
 
 #if DEBUG > 2
     printf("  zs[%d] = x_in (%e)\n", *zs_ptr, x_in);
 #endif
     
-    // 2) Convolution / dot product over the prototype taps (strided history access)
+    // Convolution / dot product over the prototype taps (strided history access)
     for (int j = 0; j < ncoef; j++) {
         // The current sample is stored at the current write position (*zs_ptr)
         // and we go back in time in steps of s.
-        int j_idx = (*zs_ptr - j * s + L_f) % L_f; 
+        int j_idx = (*zs_ptr - j * s + L_f) % L_f;  // Circular buffer
         x_out += zs[j_idx] * b[j]; 
 
 #if DEBUG > 2
@@ -40,7 +40,7 @@ float FIR(float x_in, float *zs, int *zs_ptr, float *b, int ncoef, int s) {
 #endif
     }
     
-    // 3) Advance the pointer (circular behavior)
+    // Advance the pointer (circular behavior)
     *zs_ptr = (*zs_ptr + 1) % L_f; 
 
     return x_out;

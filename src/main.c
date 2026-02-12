@@ -63,7 +63,6 @@ int main(int argc, char **argv) {
 
   int ntimes = 10;
 
-  // 1) Sequential Blocked Benchmark
   init_samples(x[0], nsamples);
   start = omp_get_wtime(); 
   for (int times = 0; times < ntimes; times++) {
