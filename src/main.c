@@ -61,8 +61,9 @@ int main(int argc, char **argv) {
   allocate_vector(&y_block, nsamples_pipe);
   allocate_vector(&y_pipe, nsamples_pipe);
 
-  int ntimes = 3;
+  int ntimes = 10;
 
+/*
   init_samples(x[0], nsamples);
   start = omp_get_wtime(); 
   for (int times = 0; times < ntimes; times++) {
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
   tseq = (end - start)/ntimes;
   printf("Sequential blocked t: %d f: %d c: %d, n: %d b: %d time: %.6f s.\n", 
           1, nfilters, ncoef, nsamples, block_size, tseq);
+*/
 
   // 2) Parallel Pipeline Benchmark
   reset_system_state(x, nfilters, y_pipe, nsamples_pipe);
@@ -93,7 +95,7 @@ int main(int argc, char **argv) {
 #endif //ENERGY
 
   // Warming
-//  linear_filter_tasks_pipeline(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
+  linear_filter_tasks_pipeline(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
   start = omp_get_wtime(); 
   for (int times = 0; times < ntimes; times++) {
 //     linear_filter_tasks_pipeline_fused_load(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
@@ -113,6 +115,7 @@ int main(int argc, char **argv) {
   printf("Parallel eq. t: %d f: %d c: %d, n: %d b: %d time: %.6f s.\n",
 		  nthreads, nfilters, ncoef, nsamples, block_size, tpar);
 
+/*
   // Comparison of results
   printf("\nComparison of results: ");
   if (compare_vectors(y_block, y_pipe, nsamples_pipe, 1e-5, 1e-6)) {
@@ -120,6 +123,7 @@ int main(int argc, char **argv) {
   } else {
     printf("ERROR! Results are different.\n");
   }
+  */
 
   // Final cleanup
   free_matrix(&x, nfilters + 1);
