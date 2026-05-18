@@ -169,9 +169,19 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, fl
     int nblocks = (nsamples + block_size - 1) / block_size;
 
     // Sliding window buffer size (must be power of two and large enough for the pipeline depth)
-    int W = 1;
-    while (W < block_size * nthreads * 2) W <<= 1;
+    int nslots = 1;
+    int min_slots = MAX(2 * nthreads, nfilters + 2);
+
+    while (nslots < min_slots) {
+        nslots <<= 1;
+    }
+
+    int W = nslots * block_size;
     int mask = W - 1;
+
+
+//printf("nthreads=%d nfilters=%d block_size=%d nslots=%d W=%d\n",
+//       nthreads, nfilters, block_size, nslots, W);
 
     // Windowed buffers for samples between stages
     float **x_win = (float **)malloc((nfilters + 1) * sizeof(float *));
@@ -264,6 +274,156 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters, fl
     free(x_win);
     for (int f = 0; f < nfilters; f++) free(zs[f]);
     free(zs); free(zs_ptr);
+    for (int t = 0; t < nthreads; t++) free(y_local[t]);
+    free(y_local);
+}
+
+
+void linear_filter_tasks_pipeline_fused_load(float *x_input, int nsamples,
+                                             int nfilters, float *b, int ncoef,
+                                             float *g, float *y,
+                                             int nthreads, int block_size) {
+    int D = (ncoef - 1) / 2;
+    int nblocks = (nsamples + block_size - 1) / block_size;
+
+
+    int nslots = 1;
+    int min_slots = MAX(2 * nthreads, nfilters + 2);
+
+    while (nslots < min_slots) {
+        nslots <<= 1;
+    }
+
+    int W = nslots * block_size;
+    int mask = W - 1;
+
+    float **x_win = (float **)malloc((nfilters + 1) * sizeof(float *));
+    for (int f = 0; f <= nfilters; f++) {
+        x_win[f] = (float *)calloc(W, sizeof(float));
+    }
+
+    float **zs = (float **)malloc(nfilters * sizeof(float *));
+    int *zs_ptr = (int *)calloc(nfilters, sizeof(int));
+
+    for (int f = 0; f < nfilters; f++) {
+        int s = 1 << f;
+        int L_f = (ncoef - 1) * s + 1;
+        zs[f] = (float *)calloc(L_f, sizeof(float));
+    }
+
+    float **y_local = (float **)malloc(nthreads * sizeof(float *));
+    for (int t = 0; t < nthreads; t++) {
+        y_local[t] = (float *)calloc(nsamples, sizeof(float));
+    }
+
+    #pragma omp parallel num_threads(nthreads)
+    {
+        #pragma omp single
+        {
+            for (int b_idx = 0; b_idx < nblocks; b_idx++) {
+                int i_start = b_idx * block_size;
+                int i_end = MIN(i_start + block_size, nsamples);
+                int current_bsize = i_end - i_start;
+                int win_offset = i_start & mask;
+
+                /*
+                 * Fused LOADBLOCK + STAGE 0:
+                 * Read directly from x_input and write the first intermediate
+                 * low-pass block into x_win[1].
+                 */
+                {
+                    int f = 0;
+                    int s = 1;
+                    int L_f = ncoef;
+                    int D_f = D;
+
+                    #pragma omp task depend(out: x_win[1][win_offset]) \
+                                     depend(inout: zs[0]) \
+                                     firstprivate(f, s, L_f, D_f, i_start, i_end, win_offset, current_bsize)
+                    {
+                        int tid = omp_get_thread_num();
+                        float *out_ptr = &x_win[1][win_offset];
+
+                        for (int j = 0; j < current_bsize; j++) {
+                            int i_global = i_start + j;
+
+                            int delay_idx = (zs_ptr[0] - D_f + L_f) % L_f;
+                            float x_delayed_input = zs[0][delay_idx];
+
+                            float x_lp_out = FIR(x_input[i_global],
+                                                 zs[0], &zs_ptr[0],
+                                                 b, ncoef, s);
+
+                            out_ptr[j] = x_lp_out;
+
+                            update_output(y_local[tid], x_lp_out,
+                                          x_delayed_input, g,
+                                          f, nfilters, ncoef,
+                                          i_global, nsamples);
+                        }
+                    }
+                }
+
+                /*
+                 * Remaining stages: same structure as the original pipeline,
+                 * but starting from f = 1 because f = 0 has been fused with load.
+                 */
+                for (int f = 1; f < nfilters; f++) {
+                    int s = 1 << f;
+                    int L_f = (ncoef - 1) * s + 1;
+                    int D_f = D * s;
+
+                    #pragma omp task depend(in: x_win[f][win_offset]) \
+                                     depend(out: x_win[f+1][win_offset]) \
+                                     depend(inout: zs[f]) \
+                                     firstprivate(f, s, L_f, D_f, i_start, i_end, win_offset, current_bsize)
+                    {
+                        int tid = omp_get_thread_num();
+                        float *in_ptr = &x_win[f][win_offset];
+                        float *out_ptr = &x_win[f+1][win_offset];
+
+                        for (int j = 0; j < current_bsize; j++) {
+                            int i_global = i_start + j;
+
+                            int delay_idx = (zs_ptr[f] - D_f + L_f) % L_f;
+                            float x_delayed_input = zs[f][delay_idx];
+
+                            float x_lp_out = FIR(in_ptr[j],
+                                                 zs[f], &zs_ptr[f],
+                                                 b, ncoef, s);
+
+                            out_ptr[j] = x_lp_out;
+
+                            update_output(y_local[tid], x_lp_out,
+                                          x_delayed_input, g,
+                                          f, nfilters, ncoef,
+                                          i_global, nsamples);
+                        }
+                    }
+                }
+
+                #pragma omp task firstprivate(i_start, i_end, nthreads) \
+                                 depend(in: x_win[nfilters][win_offset]) \
+                                 depend(inout: y[i_start])
+                {
+                    for (int pos = i_start; pos < i_end; pos++) {
+                        for (int tid = 0; tid < nthreads; tid++) {
+                            y[pos] += y_local[tid][pos];
+                            y_local[tid][pos] = 0.0f;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for (int f = 0; f <= nfilters; f++) free(x_win[f]);
+    free(x_win);
+
+    for (int f = 0; f < nfilters; f++) free(zs[f]);
+    free(zs);
+    free(zs_ptr);
+
     for (int t = 0; t < nthreads; t++) free(y_local[t]);
     free(y_local);
 }

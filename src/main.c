@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   allocate_vector(&y_block, nsamples_pipe);
   allocate_vector(&y_pipe, nsamples_pipe);
 
-  int ntimes = 10;
+  int ntimes = 3;
 
   init_samples(x[0], nsamples);
   start = omp_get_wtime(); 
@@ -92,8 +92,11 @@ int main(int argc, char **argv) {
      pm_start_counter(&counter_INT);
 #endif //ENERGY
 
+  // Warming
+//  linear_filter_tasks_pipeline(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
   start = omp_get_wtime(); 
   for (int times = 0; times < ntimes; times++) {
+//     linear_filter_tasks_pipeline_fused_load(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
      linear_filter_tasks_pipeline(x[0], nsamples_pipe, nfilters, b, ncoef, g, y_pipe, nthreads, block_size);
   }
   end = omp_get_wtime(); 

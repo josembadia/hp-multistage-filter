@@ -22,4 +22,11 @@ void linear_filter_tasks_pipeline(float *x_input, int nsamples, int nfilters,
                                           float *b, int ncoef, float *g, float *y, 
                                           int nthreads, int block_size);
 
+/**
+ * @brief Task-parallel pipeline implementation fusing load and stage 1 of the filter using OpenMP.
+ */
+void linear_filter_tasks_pipeline_fused_load(float *x_input, int nsamples, int nfilters, 
+                                          float *b, int ncoef, float *g, float *y, 
+                                          int nthreads, int block_size);
+
 #endif // FILTER_BANK_H
